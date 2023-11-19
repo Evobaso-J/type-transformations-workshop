@@ -14,6 +14,10 @@ export type Event =
       event: KeyboardEvent;
     };
 
-type ClickEvent = unknown;
+type ClickEvent = Extract<Event, Event & { type: 'click'}> // WRONG! 
+// Actually, it works, but you just need { type: 'click' } for it to work
+// The reason is that Extract looks if any of the types in the union extends the second type argument, so { type: 'click' } is enough
+
+type ClickEvent2 = Extract<Event, {type: 'click'}>
 
 type tests = [Expect<Equal<ClickEvent, { type: "click"; event: MouseEvent }>>];
