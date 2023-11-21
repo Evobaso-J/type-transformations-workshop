@@ -12,7 +12,15 @@ type Route =
   | { route: "/admin"; search: {} }
   | { route: "/admin/users"; search: {} };
 
-type RoutesObject = unknown;
+type RoutesObject = {
+  [K in Route["route"]]: Extract<Route, { route: K }>["search"];
+};
+
+// OR
+
+type RoutesObject2 = {
+  [K in Route as K["route"]]: K["search"]; // Way better and super elegant, remember that while remapping with "as" you have access to the K value
+};
 
 type tests = [
   Expect<
@@ -28,5 +36,21 @@ type tests = [
         "/admin/users": {};
       }
     >
-  >,
+  >
+];
+type tests2 = [
+  Expect<
+    Equal<
+      RoutesObject2,
+      {
+        "/": {
+          page: string;
+          perPage: string;
+        };
+        "/about": {};
+        "/admin": {};
+        "/admin/users": {};
+      }
+    >
+  >
 ];
