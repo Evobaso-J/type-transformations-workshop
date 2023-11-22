@@ -12,7 +12,13 @@ type Route =
   | { route: "/admin" }
   | { route: "/admin/users" };
 
-type RoutesObject = unknown;
+type RoutesObject = {
+  [SingleRoute in Route as SingleRoute["route"]]: SingleRoute extends {
+    search: infer Search;
+  }
+    ? Search
+    : never;
+};
 
 type tests = [
   Expect<
@@ -28,5 +34,5 @@ type tests = [
         "/admin/users": never;
       }
     >
-  >,
+  >
 ];
